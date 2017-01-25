@@ -1,0 +1,120 @@
+\chapter{Design Choices}
+
+
+\section{Where should electronic complexity lie?}
+\label{sec:complexity}
+
+Some form of electronic device has to be used to identify the relative positions of the rods, but we have some choice in where this device exists. If we want to keep our product to be simply a set of rods, then the only place for the device is within the rods themselves. The rods would each need to be able to communicate with each other, to discern relative position, and also with either a controller that relays messages to the server or to the server directly.\\
+
+Unfortunately, this solution brings several impracticalities. Firstly, the size of the rods has to be kept small, which constrains the size of battery we could embed into them. They will have to be capable of transmitting and receiving wireless messages, and even perhaps perform some amount of processing, so their power consumption will be too high for a battery of that size. Charging the batteries would also be impracticable; consider a classroom of around 30 students, each with a set of dozens of rods, and it becomes clear that the hassle of having to charge each device individually would outweigh any benefit of the product to a teacher.\\
+
+Another issue concerns the identification of rods and their assignment to students: remember again that each student needs their own set of dozens of rods, and that any information these rods transmit will be attached to that child’s profile. The teacher would have to perform the frustrating and repetitive task of assigning each rod to a student, causing a considerable amount of inconvenience. Additionally, we must keep in mind that our target users are children, who may have the tendency to take rods from another student, misplace their own rods, or perhaps even throw rods around the classroom – all of these actions could cause sets of rods to be mixed together, leading to incorrect data being sent to the server, as progress from one student will be attached to the profile of another.\\
+
+The last issue is economic: each of these rods will require several electronic components, including a processing unit and wireless transceivers, driving the cost of each unit up considerably. This is especially relevant as the smaller rods are easily lost in the classroom, so replacements would likely need to be purchased, increasing ongoing costs further.\\
+
+An alternative solution to putting complexity in the rods is to design a playing board with which the rods can interact, and embed the majority of the electronics in that instead. The 10x10 board would resemble a chess board, with grid squares guiding the placement of rods. The students arrange their rods on the board, which can identify the positions of the rods through some means, and communicate that data to the server. This alleviates all of the problems detailed above. The board is large and can house a larger battery than the rods, so there would be no power problem. There would only be one board per child so there are fewer devices to charge and much less work involved in assigning devices to children, also meaning that mixing of rods is not an issue, as it is the board which is unique to the child, not the rods. The cost to replace rods would be much lower as they would not contain as much electronics, and the overall cost would be lower as only the boards would require processing and communications equipment, as opposed to fitting one to every rod.\\ 
+
+During an interview with a primary school teacher, we were informed that having a board may actually aid in the students’ learning, as having a grid could help them conceptualise how the rods fit together. 
+
+\section{How should the board detect rod positions?}
+\label{sec:detection}  
+
+
+Having settled on the use of a board, the next design choice to be made is what technology it will make use of to detect where rods have been placed. The chosen method needs to have the following characteristics to be viable: it must be able to \textit{reliably} detect rods and their positions, as any errors may mislead and confuse the child, weakening the product’s effectiveness as an educational tool. It should keep \textit{cost} low, as there could be up to hundreds of these products in use at an institution, and since they will likely be using public funding they will be under budget constraints. It should keep \textit{power consumption} to a minimum to maximise the amount of use between charges. Lastly, it should remove as much \textit{complexity} from the rods as possible, for the reasons outlined in section \ref{sec:complexity}.\\
+
+%%  Weight %%
+
+\subsection{Weight}
+\label{weight}
+
+Rods could be given different weights, which are sensed by load sensors on the board. Each weight would be mapped to a different length of rod.\\
+
+{
+\setlength{\parindent}{0pt} % Remove paragraph indents within this block
+
+\textbf{\textit{Reliability:}} It may be difficult to distinguish between the weight of a rod and the weight from the child touching the board, which could lead to false readings. However, under good conditions it should be possible to distinguish between rods well.\\
+
+\textbf{\textit{Cost:}} The cost of the rods will likely be low, as they will just require weighting, however the board will require a load sensor in every grid square. The load sensor would need to be small enough to fit into a square around $2cm^2$ in area, and be sensitive enough to detect weighted rods light enough for a child to safely play with. A preliminary search revealed that components meeting those specifications would cost tens of pounds  \cite{ref:loadsensor}. Considering we are using a 10x10 board, purchasing 100 of these components would increase the cost to unacceptable levels.    \\
+
+\textbf{\textit{Power Consumption:}} The datasheet of a suitable sensor \cite{MICROSWI18:online} states a typical voltage requirement of $10V$, and an input resistance of $5k\Omega$. Using $P=\frac{V^2}{R}$ we can determine a power usage of $0.02W$. 100 of these components would then draw 2W. \\
+
+\textbf{\textit{Rod Complexity:}} The rods will not need any electronics, just some weighted material, so the complexity is quite low.\\
+}
+
+%%  Magnets %%
+
+\subsection{Magnetic Fields}
+\label{magnets}
+
+Magnets of varying strength could be inserted into rods to be detected by magnetometers/gaussmeters in the board. Each strength would be mapped to a different length of rod. \\
+
+{
+\setlength{\parindent}{0pt} 
+
+\textbf{\textit{Reliability:}} This method would likely prove to be quite unreliable, due to the close proximity of each of the grid squares - a magnetic field emanating from a rod \\
+
+\textbf{\textit{Cost:}}\\
+
+\textbf{\textit{Power Consumption:}}\\
+
+\textbf{\textit{Rod Complexity:}}\\
+}
+
+%%  RFID %%
+
+\subsection{RFID}
+\label{rfid}
+
+Passive RFID chips could be inserted into the rods, and RFID sensors into the board. Each RFID chip would contain identifying information about the rod it is in. When a rod is placed on the board, its RFID chip is powered and the data is read, and sent to the server. \\
+
+{
+\setlength{\parindent}{0pt} 
+
+\textbf{\textit{Reliability:}} Our requirements are such that the range of detection of a rod should be very small, no more than a centimetre or so, as otherwise neighbouring grid squares could erroneously detect nearby rods and send false data to the server. A search for RFID products that operate in this range found no suitable results, which indicates RFID is not tailored to the precision detection needed for this project.\\
+
+\textbf{\textit{Cost:}} An example of one of the shortest range components of the correct dimensions retails at between £5-14 per unit \cite{RITRPR9U23:online}; while this is much cheaper than the load sensor described above, it would still raise the price of the product to an unacceptable level given the quantity of boards/rods needed for a classroom.\\
+
+\textbf{\textit{Power Consumption:}} Since the components in the rod are passive, they would draw a minimal amount of power \\
+
+\textbf{\textit{Rod Complexity:}}\\
+}
+
+
+%%  RGB %%
+
+\subsection{RGB Light}
+\label{rgb}
+
+Each grid square of the board could contain an RGB LED and a photodiode; the LED would flash periodically and the photodiode would measure the frequency of the reflected light. Since each rod is of a distinctly different colour, each would produce a different reflected frequency.\\
+
+{
+\setlength{\parindent}{0pt} 
+
+\textbf{\textit{Reliability:}}\\
+
+\textbf{\textit{Cost:}}\\
+
+\textbf{\textit{Power Consumption:}}\\
+
+\textbf{\textit{Rod Complexity:}}\\
+}
+
+%%  Resistors %%
+
+\subsection{Shorting Resistor Chains}
+\label{resistors}
+
+Each row on the board could be linked by a long series chain of resistors of known values, and the rods themselves could contain a wire connecting two contact on either end of the rod. When the rod is placed on the board, its contacts would connect to contacts on the board, shorting a number of resistors in the board relative to the rod's length. The change in voltage at the different nodes in the line could be used to detect if and where a rod is placed.\\
+
+{
+\setlength{\parindent}{0pt} 
+
+\textbf{\textit{Reliability:}}\\
+
+\textbf{\textit{Cost:}}\\
+
+\textbf{\textit{Power Consumption:}}\\
+
+\textbf{\textit{Rod Complexity:}}\\
+}
+
