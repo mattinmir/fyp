@@ -123,16 +123,34 @@ Each row on the board could be linked by a long series chain of resistors of kno
 
 Considering the above comparison, the best solution is the resistor chains; it is comparatively inexpensive, uses comparatively low power, and does not rely on any complex technologies so has high reliability. The complexity of the rods is slightly increased due to the need for contacts, but faults with these should be more apparent than faults with electronics embedded in a rod, and in the event of a fault, replacement rods will not incur significant cost.
 
+%%				%%
+%%  Prototyping	%%
+%%				%%
+
 \section{Prototyping}
 
 \subsection{Controller}
-To control the reading of data from the resistor chains, it was decided to make use of an Arduino microcontroller board \cite{ArduinoH73:online}. This was mainly because of its ease of use, and active community of users who can provide support during the prototyping process. The Arduino board provides an interface to hardware via GPIO pins that can be used to read the voltages along the chain of resistors, and has a 5V power rail that can be used to power the prototype. 
+To control the reading of data from the resistor chains, it was decided to make use of an Arduino microcontroller board \cite{ArduinoH73:online}. This was mainly because of its ease of use, and active community of users who can provide support during the prototyping process. The Arduino board provides an interface to external hardware via GPIO pins that can be used to read the voltages along the chain of resistors, and has a 5V power rail that can be used to power the prototype. 
 
 \subsection{Mapping Voltage Values to Rod Placement}
-Two-value measurement table\\
-Why it wasnt suitable, needed to measure every node instead
+Prototyping began with the construction of two parallel simple resistor chains (shown in Figure \ref{fig:simple_resistor}) to learn to use the Arduino and to get some intuition on how rod placement could be ascertained from the measured voltages. 
+
+\begin{figure}
+	\includegraphics[width=0.75\textwidth]{simple_resistor_chain.jpg}\\
+    \centering
+  	\caption{Parallel Resistor Chains}
+    \centering
+    \label{fig:simple_resistor}
+\end{figure}
+
+This first attempt incorporated the use of differing resistors down the chain, as in the figure, but it was later realised that using equal resistors would give uniform increments of voltage at each node along the chain. The resistors were shorted in different combinations using a wire to represent the rod in the final product.
+
+\todo{finish it when you have the data}
+
+%Two-value measurement table\\ 
+%Why it wasnt suitable, needed to measure every node instead
 
 \subsection{Practicalities in Data Measurement}
-Multiplexers
+%Multiplexers
 
 
