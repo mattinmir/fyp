@@ -135,12 +135,12 @@ To control the reading of data from the resistor chains, it was decided to make 
 \subsection{Mapping Voltage Values to Rod Placement}
 Prototyping began with the construction of two parallel simple resistor chains (shown in Figure \ref{fig:simple_resistor}) to learn to use the Arduino and to get some intuition on how rod placement could be ascertained from the measured voltages. 
 
-\begin{figure}
+\begin{figure}[H]
+	\begin{center}
 	\includegraphics[width=0.75\textwidth]{simple_resistor_chain.jpg}\\
-    \centering
   	\caption{Parallel Resistor Chains}
-    \centering
     \label{fig:simple_resistor}
+    \end{center}
 \end{figure}
 
 This first attempt incorporated the use of differing resistors down the chain, as in the figure, but it was later realised that using equal resistors would give uniform increments of voltage at each node along the chain. The resistors were shorted in different combinations using a wire to represent the rod in the final product.
