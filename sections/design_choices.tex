@@ -104,7 +104,7 @@ Each grid square of the board could contain an RGB LED and a photodiode; the LED
 \subsection{Shorting Resistor Chains}
 \label{resistors}
 
-Each row on the board could be linked by a long series chain of resistors of known values, and the rods themselves could contain a wire connecting two contact on either end of the rod. Each row would have its own chain, connected in parallel to the other chains. When the rod is placed on the board, its contacts would connect to contacts on the board, shorting a number of resistors in the board relative to the rod's length. The change in voltage at the different nodes in the line could be used to detect if and where a rod is placed.\\
+Each row on the board could be linked by a long series chain of resistors of known values, and the rods themselves could contain a wire connecting two contacts, on either end of the rod. Each row would have its own chain, connected in parallel to the other chains. When the rod is placed on the board, its contacts would connect to contacts on the board, shorting a number of resistors in the board relative to the rod's length. The change in voltage at the different nodes in the line could be used to detect if and where a rod is placed.\\
 
 {
 \setlength{\parindent}{0pt} 
@@ -133,24 +133,74 @@ Considering the above comparison, the best solution is the resistor chains; it i
 To control the reading of data from the resistor chains, it was decided to make use of an Arduino microcontroller board \cite{ArduinoH73:online}. This was mainly because of its ease of use, and active community of users who can provide support during the prototyping process. The Arduino board provides an interface to external hardware via GPIO pins that can be used to read the voltages along the chain of resistors, and has a 5V power rail that can be used to power the prototype. 
 
 \subsection{Mapping Voltage Values to Rod Placement}
+\label{sec:voltages}
 Prototyping began with the construction of two parallel simple resistor chains (shown in Figure \ref{fig:simple_resistor}) to learn to use the Arduino and to get some intuition on how rod placement could be ascertained from the measured voltages. 
 
-\begin{figure}
+\begin{figure}[H]
+	\begin{center}
 	\includegraphics[width=0.75\textwidth]{simple_resistor_chain.jpg}\\
-    \centering
   	\caption{Parallel Resistor Chains}
-    \centering
     \label{fig:simple_resistor}
+    \end{center}
 \end{figure}
 
-This first attempt incorporated the use of differing resistors down the chain, as in the figure, but it was later realised that using equal resistors would give uniform increments of voltage at each node along the chain. The resistors were shorted in different combinations using a wire to represent the rod in the final product.
+This first attempt incorporated the use of differing resistors down the chain, as in Figure \ref{fig:simple_resistor} (although it was later realised that using equal resistors would be better suited as they would give uniform increments of voltage at each node along the chain). A wire was used to connect two of the labelled nodes A-E to represent the functionality of the rod shorting resistors. Voltage was measured at two points along the chain (Figure \ref{fig:5r}) to see if each different position of the rod along a chain could produce a unique pair of voltages that could be used to identify that position.  \\
 
-\todo{finish it when you have the data}
+
+
+\begin{figure}[H]
+	\begin{center}
+	\includegraphics[width=0.8\textwidth]{5r.png}\\ 
+  	\caption{Simple prototype with labelled nodes}
+    \label{fig:5r}
+    \end{center}
+\end{figure}
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|ccccc}
+\cline{2-6}
+                                 & \multicolumn{1}{c|}{\textbf{A}}                 & \multicolumn{1}{c|}{\textbf{B}}                 & \multicolumn{1}{c|}{\textbf{C}}                 & \multicolumn{1}{c|}{\textbf{D}}                 & \multicolumn{1}{c|}{\textbf{E}}                 \\ \hline
+\multicolumn{1}{|c|}{\textbf{A}} & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}}   & \multicolumn{1}{c|}{0, 3.18}                    & \multicolumn{1}{c|}{0, 2.88}                    & \multicolumn{1}{c|}{0, 2.17}                    & \multicolumn{1}{c|}{0, 0}                       \\ \cline{1-1} \cline{3-6} 
+\multicolumn{1}{|c|}{\textbf{B}} & \cellcolor[HTML]{C0C0C0}                        & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}}   & \multicolumn{1}{c|}{0.41, 3.05}                 & \multicolumn{1}{c|}{0.53, 2.47}                 & \multicolumn{1}{c|}{0.87, 0.87}                 \\ \cline{1-1} \cline{4-6} 
+\multicolumn{1}{|c|}{\textbf{C}} & \cellcolor[HTML]{C0C0C0}                        & \cellcolor[HTML]{C0C0C0}                        & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}}   & \multicolumn{1}{c|}{0.44, 2.89}                 & \multicolumn{1}{c|}{0.66, 1.89}                 \\ \cline{1-1} \cline{5-6} 
+\multicolumn{1}{|c|}{\textbf{D}} & \cellcolor[HTML]{C0C0C0}                        & \cellcolor[HTML]{C0C0C0}                        & \cellcolor[HTML]{C0C0C0}                        & \multicolumn{1}{c|}{\cellcolor[HTML]{C0C0C0}}   & \multicolumn{1}{c|}{0.48, 2.73}                 \\ \cline{1-1} \cline{6-6} 
+\multicolumn{1}{|c|}{\textbf{E}} & \cellcolor[HTML]{C0C0C0}{\color[HTML]{333333} } & \cellcolor[HTML]{C0C0C0}{\color[HTML]{333333} } & \cellcolor[HTML]{C0C0C0}{\color[HTML]{333333} } & \cellcolor[HTML]{C0C0C0}{\color[HTML]{333333} } & \cellcolor[HTML]{C0C0C0}{\color[HTML]{333333} } \\ \cline{1-1}
+\end{tabular}
+\caption{Voltages (V1, V2) when two nodes are connected by a wire}
+\label{tab:5r_voltages}
+\end{table}
+
+The values in Table \ref{tab:5r_voltages} show the voltages at V1 and V2 when each pair of nodes is connected. It is apparent that every combination of connected nodes does produce a unique pair of voltages, which proves that it is possible, in principle, to identify rods based on the voltages of the nodes. This experiment was a proof-of-concept, as it only used 5 resistors, but the real prototype needs at least 10 resistors to detect rods of up to size 10.
+
+\subsection{The Problem with the Unit Rod}
+
+At the end of Section \ref{sec:voltages} we postured that we would need at least 10 resistors per chain to detect rods of up to size 10; while this is true, it overlooks the necessity to detect unit rods, of size 1. The assumption is that each node in the resistor chain is connected to a grid square on the board, and that rods spanning multiple grid squares can short the resistors between those two nodes when connected to the board. However, a unit rod spans only one grid square, meaning that it is only connected to one node, and so cannot short any resistors. Figure \ref{fig:unitrod} demonstrates why this is the case. Note that the representations of the wires connecting the rods and the resistor chain are symbolic and do not represent what the actual connections would look like.
+
+\begin{figure}[H]
+	\begin{center}
+	\includegraphics[width=0.8\textwidth]{unitrod.png}\\ 
+  	\caption{Cross-sectional view of board}
+    \label{fig:unitrod}
+    \end{center}
+\end{figure}
+
+The chosen solution to this problem was add a double connector to the unit rod instead of the unit one, so that it can connect to two nodes and short a resistor. This means that twice as many resistors are required along a chain, but allows us to detect unit rods without affecting the detection of the other sizes.
+
+\begin{figure}[H]
+	\begin{center}
+	\includegraphics[width=\textwidth]{doubleunitrod.png}\\ 
+  	\caption{Cross-sectional view of board with double resistor chain length}
+    \label{fig:doibleunitrod}
+    \end{center}
+\end{figure}
 
 %Two-value measurement table\\ 
 %Why it wasnt suitable, needed to measure every node instead
 
 \subsection{Practicalities in Data Measurement}
-%Multiplexers
+%Multiplexers: why you need them instead of 2-value measurement
 
 
