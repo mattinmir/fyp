@@ -51,9 +51,9 @@ Magnets of varying strength could be inserted into rods to be detected by gaussm
 {
 \setlength{\parindent}{0pt} 
 
-\textbf{\textit{Reliability:}} In theory, a system using magnets could be quite reliable, as rare earth magnets can be used for several years without their strength diminishing \cite{Permanen88:online}.    \\
+\textbf{\textit{Reliability:}} In theory, a system using magnets could be quite reliable, as rare earth magnets can be used for several years without their strength diminishing \cite{Permanen88:online}. The limiting factor would be the operation range of the gaussmeters, as too high a range would mean it could mistakenly detect a field from a neighbouring rod. Unfortunately, no gaussmeters could be found that are small enough to be embedded into the board, so we are unable to know how reliable one might be. \\
 
-\textbf{\textit{Cost:}}\\
+\textbf{\textit{Cost:}} \\
 
 \textbf{\textit{Power Consumption:}}\\
 
@@ -119,8 +119,23 @@ Each row on the board could be linked by a long series chain of resistors of kno
 }
 
 
+Table \ref{tab:method_comparison} summarises each method's adherence to the specification with colour,  green representing a strong adherence, red representing a weak adherence, and yellow representing a moderate adherence. \\
+
+\begin{table}[H]
+\centering
+\begin{tabular}{llllll}
+                  & Weight                   & Magnetic Fields          & RFID                     & RGB Light                & Resistor Chains          \\
+Reliability       & \cellcolor[HTML]{FFFE2F} &                          & \cellcolor[HTML]{FD6864} & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{67FD9A} \\
+Cost              & \cellcolor[HTML]{FD6864} &                          & \cellcolor[HTML]{FD6864} & \cellcolor[HTML]{FCFF2F} & \cellcolor[HTML]{67FD9A} \\
+Power Consumption & \cellcolor[HTML]{FCFF2F} &                          &                          &                          & \cellcolor[HTML]{67FD9A} \\
+Rod Complexity    & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{FD6864} & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{FCFF2F}
+\end{tabular}
+\caption{Method Comparison Summary}
+\label{tab:method_comparison}
+\end{table}
 
 
+ 
 Considering the above comparison, the best solution is the resistor chains; it is comparatively inexpensive, uses comparatively low power, and does not rely on any complex technologies so has high reliability. The complexity of the rods is slightly increased due to the need for contacts, but faults with these should be more apparent than faults with electronics embedded in a rod, and in the event of a fault, replacement rods will not incur significant cost.
 
 %%				%%
@@ -177,7 +192,7 @@ The values in Table \ref{tab:5r_voltages} show the voltages at V1 and V2 when ea
 
 \subsection{The Problem with the Unit Rod}
 
-At the end of Section \ref{sec:voltages} we postured that we would need at least 10 resistors per chain to detect rods of up to size 10; while this is true, it overlooks the necessity to detect unit rods, of size 1. The assumption is that each node in the resistor chain is connected to a grid square on the board, and that rods spanning multiple grid squares can short the resistors between those two nodes when connected to the board. However, a unit rod spans only one grid square, meaning that it is only connected to one node, and so cannot short any resistors. Figure \ref{fig:unitrod} demonstrates why this is the case. Note that the representations of the wires connecting the rods and the resistor chain are symbolic and do not represent what the actual connections would look like.
+At the end of Section \ref{sec:voltages} we postured that we would need at least 10 resistors per chain to detect rods of up to size 10; while this is true, it overlooks the necessity to detect unit rods, of size 1. The assumption is that each node in the resistor chain is connected to a grid square on the board, and that rods connected to two nodes along a chain can short the resistors between those two nodes when connected to the board. However, a unit rod spans only one grid square, meaning that it is only connected to one node, and so cannot short any resistors. Figure \ref{fig:unitrod} demonstrates why this is the case. Note that the representations of the wires connecting the rods and the resistor chain are symbolic and do not represent what the actual connections would look like. 
 
 \begin{figure}[H]
 	\begin{center}
