@@ -202,7 +202,7 @@ At the end of Section \ref{sec:voltages} we postured that we would need at least
     \end{center}
 \end{figure}
 
-The chosen solution to this problem was add a double connector to the unit rod instead of the unit one, so that it can connect to two nodes and short a resistor. This means that twice as many resistors are required along a chain, but allows us to detect unit rods without affecting the detection of the other sizes.
+The chosen solution to this problem was add a double connector to the unit rod instead of the unit one, so that it can connect to two nodes and short a resistor. This means that twice as many resistors are required along a chain, but allows us to detect unit rods without affecting the detection of the other sizes. Figure \ref{fig:doibleunitrod} demonstrates how doubling the number of resistors achieves this.
 
 \begin{figure}[H]
 	\begin{center}
@@ -216,6 +216,9 @@ The chosen solution to this problem was add a double connector to the unit rod i
 %Why it wasnt suitable, needed to measure every node instead
 
 \subsection{Practicalities in Data Measurement}
+Taking only two voltage measurements worked well in the proof-of-concept from Section \ref{sec:voltages}, but when the same method was applied to a resistor chain of size 20, the voltage values measured were much less distinguishable from each other. This is because when the number of resistors is increased, the voltage across each is smaller, so shorting one makes less of a difference to the measured voltage, and thus a distinction between states is less easily made.
+
+The solution to this was to measure the voltage at every node in the chain, and make use of the increased information to make a more accurate inference of the positions of rods.
 %Multiplexers: why you need them instead of 2-value measurement
 
 
