@@ -46,18 +46,18 @@ Rods could be given different weights, which are sensed by load sensors on the b
 \subsection{Magnetic Fields}
 \label{magnets}
 
-Magnets of varying strength could be inserted into rods to be detected by gaussmeters in the board. Each strength would be mapped to a different length of rod. \\
+Magnets of varying strength could be inserted into rods to be detected by hall effect sensors in the board. Each strength would be mapped to a different length of rod. \\
 
 {
 \setlength{\parindent}{0pt} 
 
-\textbf{\textit{Reliability:}} In theory, a system using magnets could be quite reliable, as rare earth magnets can be used for several years without their strength diminishing \cite{Permanen88:online}. The limiting factor would be the operation range of the gaussmeters, as too high a range would mean it could mistakenly detect a field from a neighbouring rod. Unfortunately, no gaussmeters could be found that are small enough to be embedded into the board, so we are unable to know how reliable one might be. \\
+\textbf{\textit{Reliability:}} In terms of magnetic stability, a system using magnets could be quite reliable, as rare earth magnets can be used for several years without their strength diminishing \cite{Permanen88:online}. The limiting factor would be the operation range of the sensors, as too high a range would mean it could mistakenly detect a field from a neighbouring rod. The activation distance of a representative sensor was found to be up to 1-2cm \cite{47017pdf16:online}, which is slightly too high for our purposes. There is also the problem that since dipole magnetic fields follow the inverse-cube law, the strength of the field as detected by the sensor will increase as the magnetic rod approaches the sensor, so the sensor may mistake the rod for one of a weaker field as it is being placed. \\
 
-\textbf{\textit{Cost:}} \\
+\textbf{\textit{Cost:}} A search for the least expensive sensor that meets the specifications most closely yielded a result \cite{A1318LUA39:online} which is priced at over £1 per unit, making it too expensive for our purposes, as 100 would be required for our 10x10 board. \\
 
-\textbf{\textit{Power Consumption:}}\\
+\textbf{\textit{Power Consumption:}} The datasheet of a representative sensor \cite{47017pdf16:online} suggests a power usage of 0.04-0.24W per unit (4-24V $\cdot$ 10mA) and with 100 units, that would bring power usage to 4-24W, which is too high to maintain.   \\
 
-\textbf{\textit{Rod Complexity:}} The rods would be kept quite simple, as they would just require a magnet inserted into them.\\
+\textbf{\textit{Rod Complexity:}} The rods would be kept quite simple, as they would just require a magnet inserted into them. However, it would be important for the strength of the rods to be precise to distinguish rods from each other.\\
 }
 
 %%  RFID %%
@@ -74,7 +74,7 @@ Passive RFID chips could be inserted into the rods, and RFID sensors into the bo
 
 \textbf{\textit{Cost:}} An example of one of the shortest range components of the correct dimensions retails at between £5-14 per unit \cite{RITRPR9U23:online}; while this is much cheaper than the load sensor described above, it would still raise the price of the product to an unacceptable level given the quantity of boards/rods needed for a classroom.\\
 
-\textbf{\textit{Power Consumption:}} Since the components in the rod are passive, they would draw a minimal amount of power \\
+\textbf{\textit{Power Consumption:}} Since the components in the rod are passive, they would draw a minimal amount of power, powered by the reader. A suitable reader \cite{AS3991BQ49:online} is listed to draw 0.558-1.705W, which is manageable. \\
 
 \textbf{\textit{Rod Complexity:}} Since this solution requires inserting electronics into the rods, the complexity is quite high. This increases the chance that something may fail and rods will need to be replaced. Another problem is that readings will be inaccurate until the fault is discovered, which may take some time. \\
 }
@@ -94,7 +94,7 @@ Each grid square of the board could contain an RGB LED and a photodiode; the LED
 
 \textbf{\textit{Cost:}} The cost of the components for this design is quite high: 100 pairs of a suitable photodiode \cite{KPS5130P52:online} and LED \cite{L154A4SU86:online} would cost over £150.  \\
 
-\textbf{\textit{Power Consumption:}} \\
+\textbf{\textit{Power Consumption:}} Taking the typical operating voltages of each colour of the RGB LED (1.95V. 3.3V and 3.3V for red, green and blue, respectively) at the typical current draw (20mA), constant powering of an LED would require $(1.95 + 3.3 + 3.3) \cdot 0.02 =$ 0.171W. Assuming a 25\% duty cycle, since the LEDs will be flashing, this is reduced to 0.04275W. 100 of these would then draw 4.275W, which is relatively high.\\
 
 \textbf{\textit{Rod Complexity:}} This method requires adding nothing at all to the rods: since the solution works by sensing colour, the rods would be just plain coloured plastic.\\
 }
@@ -123,12 +123,12 @@ Table \ref{tab:method_comparison} summarises each method's adherence to the spec
 
 \begin{table}[H]
 \centering
-\begin{tabular}{llllll}
-                  & Weight                   & Magnetic Fields          & RFID                     & RGB Light                & Resistor Chains          \\
-Reliability       & \cellcolor[HTML]{FFFE2F} &                          & \cellcolor[HTML]{FD6864} & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{67FD9A} \\
-Cost              & \cellcolor[HTML]{FD6864} &                          & \cellcolor[HTML]{FD6864} & \cellcolor[HTML]{FCFF2F} & \cellcolor[HTML]{67FD9A} \\
-Power Consumption & \cellcolor[HTML]{FCFF2F} &                          &                          &                          & \cellcolor[HTML]{67FD9A} \\
-Rod Complexity    & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{FD6864} & \cellcolor[HTML]{67FD9A} & \cellcolor[HTML]{FCFF2F}
+\begin{tabular}{llllllllll}
+                  & Weight                   && \multicolumn{1}{p{2cm}}{\centering Magnetic \\ Fields}         && RFID                     && RGB Light                && \multicolumn{1}{p{2cm}}{\centering Resistor \\ Chains}          \\
+Reliability       & \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{67FD9A} \\
+Cost              & \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FCFF2F} && \cellcolor[HTML]{67FD9A} \\
+Power Consumption & \cellcolor[HTML]{FCFF2F} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{67FD9A} \\
+Rod Complexity    & \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{FCFF2F}
 \end{tabular}
 \caption{Method Comparison Summary}
 \label{tab:method_comparison}
