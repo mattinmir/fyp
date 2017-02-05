@@ -218,7 +218,7 @@ The chosen solution to this problem was add a double connector to the unit rod i
 \subsection{Practicalities in Data Measurement}
 Taking only two voltage measurements worked well in the proof-of-concept from Section \ref{sec:voltages}, but when the same method was applied to a resistor chain of size 20, the voltage values measured were much less distinguishable from each other. This is because when the number of resistors is increased, the voltage across each is smaller, so shorting one makes less of a difference to the measured voltage, and thus a distinction between states is less easily made.
 
-The solution to this was to measure the voltage at every node in the chain, and make use of the increased information to make a more accurate inference of the positions of rods.
+The solution to this was to measure the voltage at every node in the chain, and make use of the increased information to make a more accurate inference of the positions of rods. With so many nodes being measured, it would not be possible to connect each directly to the Arduino's limited GPIO (General Purpose Input/Output) pins. Instead, multiplexers are used to direct all measurements to a single pin. The CD4051BE 8:1 multiplexer \cite{CD4051BE27:online} was chosen instead of available 16:1 multiplexers, because although more 8:1 units would be required than 16:1 units to meet our needs, its relatively low price meant it was still the more economic choice. 
 %Multiplexers: why you need them instead of 2-value measurement
 
 
