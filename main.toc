@@ -1,0 +1,16 @@
+\select@language {english}
+\contentsline {chapter}{\numberline {1}Project Specification}{1}
+\contentsline {chapter}{\numberline {2}Background}{3}
+\contentsline {chapter}{\numberline {3}Design Choices}{4}
+\contentsline {section}{\numberline {3.1}Where should electronic complexity lie?}{4}
+\contentsline {section}{\numberline {3.2}How should the board detect rod positions?}{5}
+\contentsline {subsection}{\numberline {3.2.1}Weight}{5}
+\contentsline {subsection}{\numberline {3.2.2}Magnetic Fields}{6}
+\contentsline {subsection}{\numberline {3.2.3}RFID}{6}
+\contentsline {subsection}{\numberline {3.2.4}RGB Light}{7}
+\contentsline {subsection}{\numberline {3.2.5}Shorting Resistor Chains}{7}
+\contentsline {section}{\numberline {3.3}Prototyping}{8}
+\contentsline {subsection}{\numberline {3.3.1}Controller}{8}
+\contentsline {subsection}{\numberline {3.3.2}Mapping Voltage Values to Rod Placement}{8}
+\contentsline {subsection}{\numberline {3.3.3}Practicalities in Data Measurement}{9}
+\contentsline {chapter}{\numberline {4}Implementation Plan}{10}
