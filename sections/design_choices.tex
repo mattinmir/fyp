@@ -4,9 +4,9 @@
 \section{Where should electronic complexity lie?}
 \label{sec:complexity}
 
-Some form of electronic device has to be used to identify the relative positions of the rods, but we have some choice in where this device exists. If we want to keep our product to be simply a set of rods, then the only place for the device is within the rods themselves. The rods would each need to be able to communicate with each other, to discern relative position, and also with either a controller that relays messages to the server or to the server directly.\\
+Some form of electronic device has to be used to identify the relative positions of the rods, in order to ascertain how the student has arranged them, but we have some choice in where this device exists. If we want to keep our product to be simply a set of rods, then the only place for the device is within the rods themselves. The rods would each need to be able to communicate with each other, to discern relative position, and also communicate with  a server for further processing.\\
 
-Unfortunately, this solution brings several impracticalities. Firstly, the size of the rods has to be kept small, which constrains the size of battery we could embed into them. They will have to be capable of transmitting and receiving wireless messages, and even perhaps perform some amount of processing, so their power consumption will be too high for a battery of that size. Charging the batteries would also be impracticable; consider a classroom of around 30 students, each with a set of dozens of rods, and it becomes clear that the hassle of having to charge each device individually would outweigh any benefit of the product to a teacher.\\
+Unfortunately, this solution brings several impracticalities. Firstly, the size of the rods has to be kept small, not only for storage purposes but also to allow the children to comfortably pick them up and work with them. We will try to keep our rods as close as possible to the original rods, which are about 1cm in diameter. This constrains the size of battery we could embed into them. They will have to be capable of transmitting and receiving wireless messages, and even perhaps perform some amount of processing, so their power consumption will be too high for a battery of that size. Charging the batteries would also be impracticable; consider a classroom of up to 30 students, each with a set of dozens of rods, and it becomes clear that the hassle of having to charge each device individually would outweigh any benefit of the product to a teacher.\\
 
 Another issue concerns the identification of rods and their assignment to students: remember again that each student needs their own set of dozens of rods, and that any information these rods transmit will be attached to that child’s profile. The teacher would have to perform the frustrating and repetitive task of assigning each rod to a student, causing a considerable amount of inconvenience. Additionally, we must keep in mind that our target users are children, who may have the tendency to take rods from another student, misplace their own rods, or perhaps even throw rods around the classroom – all of these actions could cause sets of rods to be mixed together, leading to incorrect data being sent to the server, as progress from one student will be attached to the profile of another.\\
 
@@ -46,12 +46,12 @@ Rods could be given different weights, which are sensed by load sensors on the b
 \subsection{Magnetic Fields}
 \label{magnets}
 
-Magnets of varying strength could be inserted into rods to be detected by hall effect sensors in the board. Each strength would be mapped to a different length of rod. \\
+Magnets of varying strength could be inserted into rods to be detected by Hall effect sensors in the board. Each strength would be mapped to a different length of rod. \\
 
 {
 \setlength{\parindent}{0pt} 
 
-\textbf{\textit{Reliability:}} In terms of magnetic stability, a system using magnets could be quite reliable, as rare earth magnets can be used for several years without their strength diminishing \cite{Permanen88:online}. The limiting factor would be the operation range of the sensors, as too high a range would mean it could mistakenly detect a field from a neighbouring rod. The activation distance of a representative sensor was found to be up to 1-2cm \cite{47017pdf16:online}, which is slightly too high for our purposes. There is also the problem that since dipole magnetic fields follow the inverse-cube law, the strength of the field as detected by the sensor will increase as the magnetic rod approaches the sensor, so the sensor may mistake the rod for one of a weaker field as it is being placed. \\
+\textbf{\textit{Reliability:}} In terms of magnetic stability, a system using magnets could be quite reliable, as rare earth magnets can be used for several years without their strength diminishing \cite{Permanen88:online}. The limiting factor would be the operation range of the sensors, as too high a range would mean it could mistakenly detect a field from a neighbouring rod. The activation distance of a representative sensor was found to be up to 1-2cm \cite{47017pdf16:online}, which is slightly too high for our purposes. There is also the problem that since dipole magnetic fields follow the inverse-cube law \cite{Theinver11:online}, the strength of the field as detected by the sensor will increase as the magnetic rod approaches the sensor, so the sensor may mistake the rod for one of a weaker strength as it is being placed. \\
 
 \textbf{\textit{Cost:}} A search for the least expensive sensor that meets the specifications most closely yielded a result \cite{A1318LUA39:online} which is priced at over £1 per unit, making it too expensive for our purposes, as 100 would be required for our 10x10 board. \\
 
@@ -70,11 +70,11 @@ Passive RFID chips could be inserted into the rods, and RFID sensors into the bo
 {
 \setlength{\parindent}{0pt} 
 
-\textbf{\textit{Reliability:}} Our requirements are such that the range of detection of a rod should be very small, no more than a centimetre or so, as otherwise neighbouring grid squares could erroneously detect nearby rods and send false data to the server. A search for RFID products that operate in this range found no suitable results, which indicates RFID is not tailored to the precision detection needed for this project.\\
+\textbf{\textit{Reliability:}} Our requirements are such that the range of detection of a rod should be very small, no more than a centimetre, as otherwise neighbouring grid squares could erroneously detect nearby rods and send false data to the server. A search for RFID products that operate in this range found no suitable results, which indicates RFID is not tailored to the precision detection needed for this project.\\
 
 \textbf{\textit{Cost:}} An example of one of the shortest range components of the correct dimensions retails at between £5-14 per unit \cite{RITRPR9U23:online}; while this is much cheaper than the load sensor described above, it would still raise the price of the product to an unacceptable level given the quantity of boards/rods needed for a classroom.\\
 
-\textbf{\textit{Power Consumption:}} Since the components in the rod are passive, they would draw a minimal amount of power, powered by the reader. A suitable reader \cite{AS3991BQ49:online} is listed to draw 0.558-1.705W, which is manageable. \\
+\textbf{\textit{Power Consumption:}} Since the components in the rod are passive, they would draw a minimal amount of power, powered by the reader. A suitable reader \cite{AS3991BQ49:online} is listed to draw 0.558-1.705W. 100 of these would draw an unmanageable amount of power. \\
 
 \textbf{\textit{Rod Complexity:}} Since this solution requires inserting electronics into the rods, the complexity is quite high. This increases the chance that something may fail and rods will need to be replaced. Another problem is that readings will be inaccurate until the fault is discovered, which may take some time. \\
 }
@@ -96,7 +96,7 @@ Each grid square of the board could contain an RGB LED and a photodiode; the LED
 
 \textbf{\textit{Power Consumption:}} Taking the typical operating voltages of each colour of the RGB LED (1.95V. 3.3V and 3.3V for red, green and blue, respectively) at the typical current draw (20mA), constant powering of an LED would require $(1.95 + 3.3 + 3.3) \cdot 0.02 =$ 0.171W. Assuming a 25\% duty cycle, since the LEDs will be flashing, this is reduced to 0.04275W. 100 of these would then draw 4.275W, which is relatively high.\\
 
-\textbf{\textit{Rod Complexity:}} This method requires adding nothing at all to the rods: since the solution works by sensing colour, the rods would be just plain coloured plastic.\\
+\textbf{\textit{Rod Complexity:}} This method requires adding nothing at all to the rods: since the solution works by sensing colour, the rods would be simply coloured as they are in the original set of rods.\\
 }
 
 %%  Resistors %%
@@ -104,14 +104,14 @@ Each grid square of the board could contain an RGB LED and a photodiode; the LED
 \subsection{Shorting Resistor Chains}
 \label{resistors}
 
-Each row on the board could be linked by a long series chain of resistors of known values, and the rods themselves could contain a wire connecting two contacts, on either end of the rod. Each row would have its own chain, connected in parallel to the other chains. When the rod is placed on the board, its contacts would connect to contacts on the board, shorting a number of resistors in the board relative to the rod's length. The change in voltage at the different nodes in the line could be used to detect if and where a rod is placed.\\
+Each row on the board could be linked to a long series chain of resistors of known values, and the rods themselves could contain a wire connecting two contacts, on either end of the rod. Each row would have its own chain, connected in parallel to the other chains, with a contact on each grid square connected to a node along the chain. When the rod is placed on the board, its contacts would connect to contacts on the board, shorting a number of resistors in the board relative to the rod's length. The change in voltage at the different nodes in the line could be used to detect if and where a rod is placed. Figure \ref{fig:unitrod} demonstrates more clearly how this could work.\\
 
 {
 \setlength{\parindent}{0pt} 
 
 \textbf{\textit{Reliability:}} This solution will be very reliable as long as the contacts are designed in such a way that a child could not short resistors without a rod, which would produce a false reading. Another requirement is that the voltage level be high enough so that every node in the chain of resistors is sufficiently different and distinguishable.\\
 
-\textbf{\textit{Cost:}} The only component required is resistors, which are much cheaper \cite{CFR25J1024:online} than the resources required for the alternative solutions.\\
+\textbf{\textit{Cost:}} The only component required is resistors, which are orders of magnitude cheaper \cite{CFR25J1024:online} than the resources required for the alternative solutions.\\
 
 \textbf{\textit{Power Consumption:}} The power consumption will be low: assuming the board will be controlled by a microcontroller with a 5V rail powering 10 parallel chains of resistors each totalling $2K\Omega$ (meaning the overall resistance is $200\Omega$), a $P=\frac{V^2}{R}$ calculation reveals a power usage of $0.125W$, which is quite acceptable.  \\
 
@@ -127,7 +127,7 @@ Table \ref{tab:method_comparison} summarises each method's adherence to the spec
                   & Weight                   && \multicolumn{1}{p{2cm}}{\centering Magnetic \\ Fields}         && RFID                     && RGB Light                && \multicolumn{1}{p{2cm}}{\centering Resistor \\ Chains}          \\
 Reliability       & \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{67FD9A} \\
 Cost              & \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FCFF2F} && \cellcolor[HTML]{67FD9A} \\
-Power Consumption & \cellcolor[HTML]{FCFF2F} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{67FD9A} \\
+Power Consumption & \cellcolor[HTML]{FCFF2F} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{FFFE2F} && \cellcolor[HTML]{67FD9A} \\
 Rod Complexity    & \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{FD6864} && \cellcolor[HTML]{67FD9A} && \cellcolor[HTML]{FCFF2F}
 \end{tabular}
 \caption{Method Comparison Summary}
@@ -145,9 +145,9 @@ Considering the above comparison, the best solution is the resistor chains; it i
 \section{Prototyping}
 
 \subsection{Controller}
-To control the reading of data from the resistor chains, it was decided to make use of an Arduino microcontroller board \cite{ArduinoH73:online}. This was mainly because of its ease of use, and active community of users who can provide support during the prototyping process. The Arduino board provides an interface to external hardware via GPIO pins that can be used to read the voltages along the chain of resistors, and has a 5V power rail that can be used to power the prototype. 
+To control the reading of data from the resistor chains, it was decided to make use of an Arduino microcontroller board \cite{ArduinoH73:online}. This was mainly because of its ease of use, and active community of users who can provide support during the prototyping process. The Arduino board provides an interface to external hardware via GPIO (General Purpose Input/Output) pins that can be used to read the voltages along the chain of resistors, and has a 5V power rail that can be used to power the prototype. 
 
-\subsection{Mapping Voltage Values to Rod Placement}
+\subsection{Determining Rod Placement}
 \label{sec:voltages}
 Prototyping began with the construction of two parallel simple resistor chains (shown in Figure \ref{fig:simple_resistor}) to learn to use the Arduino and to get some intuition on how rod placement could be ascertained from the measured voltages. 
 
@@ -159,7 +159,7 @@ Prototyping began with the construction of two parallel simple resistor chains (
     \end{center}
 \end{figure}
 
-This first attempt incorporated the use of differing resistors down the chain, as in Figure \ref{fig:simple_resistor} (although it was later realised that using equal resistors would be better suited as they would give uniform increments of voltage at each node along the chain). A wire was used to connect two of the labelled nodes A-E to represent the functionality of the rod shorting resistors. Voltage was measured at two points along the chain (Figure \ref{fig:5r}) to see if each different position of the rod along a chain could produce a unique pair of voltages that could be used to identify that position.  \\
+This first attempt incorporated the use of differing resistors down the chain, as in Figure \ref{fig:5r} (although it was later realised that using equal resistors would be better suited as they would give uniform increments of voltage at each node along the chain). A wire was used to connect two of the labelled nodes A-E to represent the functionality of the rod shorting resistors. Voltage was measured at two points along the chain to see if each different position of the rod along a chain could produce a unique pair of voltages that could be used to identify that position.  \\
 
 
 
@@ -202,13 +202,13 @@ At the end of Section \ref{sec:voltages} we postured that we would need at least
     \end{center}
 \end{figure}
 
-The chosen solution to this problem was add a double connector to the unit rod instead of the unit one, so that it can connect to two nodes and short a resistor. This means that twice as many resistors are required along a chain, but allows us to detect unit rods without affecting the detection of the other sizes. Figure \ref{fig:doibleunitrod} demonstrates how doubling the number of resistors achieves this.
+The chosen solution to this problem was add a double connector to the unit rod instead of the unit one, so that it can connect to two nodes and short a resistor. This means that twice as many resistors are required along a chain, but allows us to detect unit rods without affecting the detection of the other sizes. Figure \ref{fig:doubleunitrod} demonstrates how doubling the number of resistors achieves this.
 
 \begin{figure}[H]
 	\begin{center}
 	\includegraphics[width=\textwidth]{doubleunitrod.png}\\ 
   	\caption{Cross-sectional view of board with double resistor chain length}
-    \label{fig:doibleunitrod}
+    \label{fig:doubleunitrod}
     \end{center}
 \end{figure}
 
@@ -218,7 +218,7 @@ The chosen solution to this problem was add a double connector to the unit rod i
 \subsection{Practicalities in Data Measurement}
 Taking only two voltage measurements worked well in the proof-of-concept from Section \ref{sec:voltages}, but when the same method was applied to a resistor chain of size 20, the voltage values measured were much less distinguishable from each other. This is because when the number of resistors is increased, the voltage across each is smaller, so shorting one makes less of a difference to the measured voltage, and thus a distinction between states is less easily made.
 
-The solution to this was to measure the voltage at every node in the chain, and make use of the increased information to make a more accurate inference of the positions of rods. With so many nodes being measured, it would not be possible to connect each directly to the Arduino's limited GPIO (General Purpose Input/Output) pins. Instead, multiplexers are used to direct all measurements to a single pin. The CD4051BE 8:1 multiplexer \cite{CD4051BE27:online} was chosen instead of available 16:1 multiplexers, because although more 8:1 units would be required than 16:1 units to meet our needs, its relatively low price meant it was still the more economic choice. 
-%Multiplexers: why you need them instead of 2-value measurement
+The solution to this was to measure the voltage at every node in the chain, and make use of the increased information to make a more accurate inference of the positions of rods. With so many nodes being measured, it would not be possible to connect each directly to the Arduino's limited GPIO (General Purpose Input/Output) pins. Instead, multiplexers are used to direct all measurements to a single pin. The CD4051BE 8:1 multiplexer \cite{CD4051BE27:online} was chosen instead of available 16:1 multiplexers, because although more 8:1 units would be required than 16:1 units to meet our needs, its relatively low price meant it was still the more economic choice. The method for mapping the measured voltage values to rod placements is detailed in the Implementation Plan, in Section \ref{sec:rodplacement}.
+
 
 

@@ -1,19 +1,34 @@
 \chapter{Implementation Plan}
 The following are considerations for the remainder of the project.
 
-\section{Construction Methods}
-%3D Print? Colours? 
+\section{Construction}
+Construction will likely involve 3D printing, as it is most convenient for prototyping. Guidance will be sought from Imperial College Robotics Society on how to operate a 3D printer, and how to use the computer-aided design tools to produce a prototype. Research will be made into the most appropriate material to use in the printer, with regards to ease of production process as well as properties of the printed product.
 
 
-\section{Material}
-It is important to consider the material the rods and the board will be made from; the users of the product are young children, and so the durability of the product should reflect that. It should also be 
+
+\section{Circuit Board}
+The prototype that is built so far uses a breadboard and wires; for production, a custom-designed circuit board will need to be printed. The board will make use of the standalone Arduino microcontroller, rather than the hobbyist board being used in the prototype. The author does not have much experience in designing and printing circuit boards, so guidance will be sought from Imperial College Robotics Society and colleagues on how to do so. 
+
 
 \section{Contacts and Wire}
+The prototypes used so far for testing have made use of a wire in place of the rod, replicating its functionality, but not addressing the tough design issue of actually constructing the rod. The design of the contacts that will be placed on either end of the rod (and on the grid squares) will need to strike a balance between durability, safety, accessibility, and ease of production. \\
 
+Durability is a concern because the children using the product may not treat it delicately, so any fragile components of the design will likely fail quickly. Additionally, protrusions, sharp corners, or the possibility of splintered material could pose safety risks to the children, so such designs would not be suitable. The dexterity of the children should be kept in mind, since their motor skills may not be suited to working with a design that requires any considerable force or nimble movements to operate. Lastly, a complex design could drive production costs up, as well as making it more difficult to produce a good-quality prototype.\\
+
+Inspiration can be drawn from related existing products: Cubelets\textsuperscript{\textregistered} by Modular Robotics \cite{Cubelets52:online} are electronic cubes used to build modular robots. They make use of magnetic connectors, which are strong enough to keep the cubes together, but weak enough to allow a child to take them apart. The use of magnets in our rods may prove to be a useful tool.\\
+
+It would also be best for the contacts to not be directly accessible by the children's hands, as a build-up of grease and dirt could impair their electrical conductivity.\\
+
+The contacts should be designed such that a rod cannot be placed in an orientation other than that for which the board has been designed. Connecting nodes between chains will produce false or misleading data.
+
+
+\section{Mapping Voltages to Rod Placement}
+\label{sec:rodplacement}
+As explained in Section \ref{sec:voltages}, we are able to detect the voltages at every node along the chain using multiplexers. To map those values to rod placements, we can use the fact that nodes which have been shorted by the same rod will be at the same voltage. The software running on the controller can sweep along each chain reading the voltages, and when it reads two or more nodes of the same value, it can conclude there is a rod in that position. Each rod spans a number of nodes equal to twice the rod's length; for example, as was seen in Figure \ref{fig:doubleunitrod}, the 4-rod spans 8 nodes. This allows us to count the number of nodes that are of the same voltage, and divide that number by 2 to get the rod length. This information, as well as the positions of the nodes, is what will be sent to the server. The precise nature of the information sent to the server will depend on which configuration requires the least communication, as this will conserve battery power.
 
 
 \section{Wireless Communication}
-The board will need to transmit information about the rod placements (as well as some other auxiliary information such as remaining battery power) to the server to be processed by the software. This will likely be achieved using an ESP8266 Wi-Fi module, a popular choice for wireless communications in projects of this nature. The author is currently studying the Embedded Systems module offered in EEE, during which the use of the ESP8266 module is taught, and so more detailed plans will be realised once the course is completed.
+The board will need to transmit information about the rod placements (as well as some other auxiliary information such as remaining battery power) to the server to be processed by the software. This will likely be achieved using an ESP8266 Wi-Fi module, a popular choice for wireless communications in projects of this nature. The author is currently studying the Embedded Systems module under Dr. Edward Stott, during which the use of the ESP8266 module is taught, and so more detailed plans will be realised once the course is completed.
 
 \section{Power}
 The board will be battery powered, so research will need to be performed into the size and type of battery required to sustain the board for a reasonable amount of usage. What 'reasonable' constitutes will be determined by future conversations with teachers. Thought will have to go into how a charging interface may be designed; it could be powered from the mains, but an adapter will need to be incorporated to bring the voltage to an appropriate level, or it could be powered via a USB port, which could reduce complexity but may not be as convenient as the wall socket.
