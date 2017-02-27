@@ -1,12 +1,17 @@
 #define nodes_per_line 19
 
+
+
 unsigned intermediary_sel[] = { /*lsb*/ 25, 26, 27 /*msb*/ }; // Select pins for intermediary multiplexers
 unsigned output_sel[] = { /*lsb*/ 22, 23, 24 /*msb*/ }; // Select pins to choose ouput of which multiplexer
 unsigned output = 0;   // Analogue pin to read voltage reading from
 unsigned input_voltage = 5.0;
 unsigned lines = 2;
 unsigned counter = 0;
-float voltages[10][nodes_per_line]; // Values at each node
+float voltages[10][nodes_per_line]; // Values at each node [No of lines][Nodes per line]
+
+typedef unsigned rod_view_t[10][nodes_per_line]; // Holds representation of board in rod format 
+
 
 void setup(){
   Serial.begin(9600);  // serial comms for troubleshooting (always)
@@ -15,21 +20,11 @@ void setup(){
     pinMode(intermediary_sel[pin], OUTPUT);
     pinMode(output_sel[pin], OUTPUT);
   } 
-
-
-  
-
-
 }
 
 
 void loop()
 {
-
-  
-
-
-
   // For each line
   for (unsigned line = 0; line < lines; line++)
   {
@@ -125,3 +120,15 @@ void loop()
     
   
 }
+
+bool same_voltage(float v1, float v2)
+{
+	return (v1 <= 1.01*v2) && (v1 >= 0.99*v2); 
+}
+
+
+void detect_rods(rod_view_t rods)
+{
+	for (unsigned i 
+}
+
