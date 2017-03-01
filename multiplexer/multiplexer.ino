@@ -1,19 +1,23 @@
+#define DEBUG    
+
 #define NODES_PER_LINE              19
-#define NO_OF_LINES                 10
+#define GRID_SQUARES_PER_LINE       (((NODES_PER_LINE) + (1))/(2))
+#define NO_OF_LINES                 2
 #define INPUT_VOLTAGE               5.0f
-#define MEASUREMENT_PRECISION       0.01 
+#define MEASUREMENT_PRECISION       0.07f
+
 
 typedef float voltage_view_t[NO_OF_LINES][NODES_PER_LINE]; // Holds voltages at each node
-typedef unsigned rod_view_t[NO_OF_LINES][NODES_PER_LINE]; // Holds representation of board in rod format 
+typedef unsigned rod_view_t[NO_OF_LINES][GRID_SQUARES_PER_LINE]; // Holds representation of board in rod format 
 
 voltage_view_t voltages; // Voltages at each node 
-rod_view_t rods; // Representation of board in rod format 
+rod_view_t* rods; // Representation of board in rod format 
 unsigned intermediary_sel[] = { /*lsb*/ 25, 26, 27 /*msb*/ }; // Select pins for intermediary multiplexers
 unsigned output_sel[] = { /*lsb*/ 22, 23, 24 /*msb*/ }; // Select pins to choose ouput of which multiplexer
 unsigned output = 0;   // Analogue pin to read voltage reading from
 unsigned counter = 0;
 
-void detect_rods(const voltage_view_t &v, &rod_view_t rods);
+void detect_rods(const voltage_view_t &v, rod_view_t &rods);
 
 
 
@@ -30,6 +34,7 @@ void setup(){
 
 void loop()
 {
+
   // For each line
   for (unsigned line = 0; line < NO_OF_LINES; line++)
   {
@@ -56,12 +61,16 @@ void loop()
     }
 
 
-    rod_view_t new_rods = detect_rods(voltages);
+    rod_view_t new_rods;
+    detect_rods(voltages, new_rods);
 
-    if(state_has_changed(rods, new_rods))
+    if(state_has_changed(*rods, new_rods))
     {
-      rods = new_rods;
-      print_rod_view(rods);
+     
+      rods = &new_rods;
+      #ifndef DEBUG
+      print_rod_view(*rods);
+      #endif
       /*TODO: Send message to server*/
     }
 
@@ -81,14 +90,14 @@ void loop()
 // Returns true if voltages are within 2*MEASUREMENT_PRECISION of each other
 bool same_voltage(float v1, float v2)
 {
-  unsigned upper_limit = 1 + MEASUREMENT_PRECISION;
-  unsigned lower_limit = 1 - MEASUREMENT_PRECISION;
+  float upper_limit = 1.0 + MEASUREMENT_PRECISION;
+  float lower_limit = 1.0 - MEASUREMENT_PRECISION;
 
 	return (v1 <= upper_limit*v2) && (v1 >= lower_limit*v2); 
 }
 
 
-void detect_rods(const voltage_view_t &v, &rod_view_t rods)
+void detect_rods(const voltage_view_t &v, rod_view_t &rods)
 {
 
 
@@ -99,28 +108,54 @@ void detect_rods(const voltage_view_t &v, &rod_view_t rods)
     unsigned count;
     bool mid_rod = false;
     unsigned node = 0;
-
+  
     // For each node on the line
     while (node < NODES_PER_LINE)
     { 
+      #ifdef DEBUG
+      Serial.print (node);
+      Serial.print ('\t');
+      Serial.print (!mid_rod);
+      Serial.print ('\t');
+      Serial.print (node + 1 < NODES_PER_LINE);
+      Serial.print ('\t');
+      Serial.print (same_voltage(v[line][node], v[line][node+1]));
+      Serial.print ('\t');
+      Serial.print (v[line][node]);
+      Serial.print ('\t');
+      Serial.print (v[line][node+1]);
+      Serial.print ("\n");
+      #endif
       if  ( !mid_rod && // If not currently tracing a rod
-            node + 1 < NODES_PER_LINE && // and not at the end of the line
-            same_voltage(v[line][node], v[line][node+1] // and the next node has the same voltage as the current one
+            node + 1 < NODES_PER_LINE // and not at the end of the line  
           ) 
+      
       {
-        mid_rod = true; // Begin tracing a rod
-        head = node; // Note the start of the rod 
-        count = 2; // Keep count of length of rod
-        node += 2; // Already know the first two nodes are part of the rod 
+        // If the next node has the same voltage as the current one
+        if(same_voltage(v[line][node], v[line][node+1])) 
+        {
+          mid_rod = true; // Begin tracing a rod
+          head = node; // Note the start of the rod 
+          count = 2; // Keep count of length of rod
+          node += 2; // Already know the first two nodes are part of the rod 
+        }
+
+        // If there is no rod present
+        else
+        {
+          rods[line][node/2] = 0; // Divide by 2 because there are 2 nodes for every grid square
+          node+=2; // If we are not in a rod and there wasnt a connection in the first spot of the cell, there won't be in the second
+        }
       }
 
+      
       // If currently tracing a rod
       else if (mid_rod)
       {
         // If current node same voltage as the head
-        if (same_voltage(v[line][node], v[line][head])
+        if (same_voltage(v[line][node], v[line][head]))
         {
-          // Increase the trce one step
+          // Increase the trace one step
           count++;
           node++;
         }
@@ -129,18 +164,30 @@ void detect_rods(const voltage_view_t &v, &rod_view_t rods)
         else
         {
           // Each rod covers 2x as many nodes as its length
-          rod_length = count / 2;
-
+          unsigned rod_length = count / 2;
+           
           // Mark the rod in the rod_view structure
-          for (unsigned i = head; i < node; i++)
+          for (unsigned i = head/2; i < rod_length; i++)
           {
+            
             rods[line][i] = rod_length;
           }
 
           // End of rod
           mid_rod = false;
+          count = 0;
+          
         } 
       }
+      
+      else if (  !mid_rod && // If not currently tracing a rod
+                 node + 1 == NODES_PER_LINE // and at the end of the line  
+              )
+      {
+        break;      
+      }
+      
+      
     }
   }
 }
@@ -150,7 +197,7 @@ bool state_has_changed(rod_view_t rods_old, rod_view_t rods_new)
   // For every cell in the rod_view
   for (unsigned i = 0; i < NO_OF_LINES; i++)
   {
-    for (unsigned j = 0; j < NODES_PER_LINE; j++)
+    for (unsigned j = 0; j < GRID_SQUARES_PER_LINE; j++)
     {
       // If any cell is different, return true
       if (rods_old[i][j] != rods_new[i][j])
@@ -168,11 +215,12 @@ void print_rod_view(rod_view_t r)
 {
   for (unsigned i = 0; i < NO_OF_LINES; i++)
   {
-    for (unsigned j = 0; j < NODES_PER_LINE; j++)
+    for (unsigned j = 0; j < GRID_SQUARES_PER_LINE; j++)
     {
       Serial.print (r[i][j]);
       Serial.print ("\t");
     }
     Serial.print ("\n");
   }
+  Serial.print ("\n");
 }
