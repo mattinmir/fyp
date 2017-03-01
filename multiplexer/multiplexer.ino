@@ -13,6 +13,8 @@ unsigned output_sel[] = { /*lsb*/ 22, 23, 24 /*msb*/ }; // Select pins to choose
 unsigned output = 0;   // Analogue pin to read voltage reading from
 unsigned counter = 0;
 
+void detect_rods(const voltage_view_t &v, &rod_view_t rods);
+
 
 
 
@@ -64,59 +66,6 @@ void loop()
     }
 
 
-    
-
-/* Find connections */
-/*
-  // For each line
-  for (unsigned line = 0; line < NO_OF_LINES; line++)
-  {
-    unsigned node = 0;
-    
-    while(node < NODES_PER_LINE)
-    {
-      unsigned connection = node + 1; 
-      while (voltages[line][connection] - voltages[line][node] < 0.02 && connection < NODES_PER_LINE) // If within 0.02V 
-      {
-        connection++;
-      }
-
-      if (node != connection && connection < NODES_PER_LINE)
-      {
-        Serial.print("Line ");
-        Serial.print(line);
-        Serial.print(": ");
-        Serial.print(node);
-        Serial.print(" connected to ");
-        Serial.println(connection);
-
-        node = connection + 1;
-        
-      }
-    }
-  }
-
-      
-
-  counter = 0;
-    for (unsigned line = 0; line < NO_OF_LINES; line++)
-    {
-      Serial.print("Line ");
-      Serial.print(line);
-      Serial.print(":\t ");
-      
-      for (unsigned i = 0; i < NODES_PER_LINE; i++)
-      {
-          Serial.print(voltages[line][i]);
-          Serial.print("\t");
-      }
-      
-      Serial.print ("\n");
-    }
-    Serial.print ("\n");
-*/
-
-
 /* Testing pins */
 //   digitalWrite(output_sel[0], 0);
 //   digitalWrite(output_sel[1], 1);
@@ -139,9 +88,9 @@ bool same_voltage(float v1, float v2)
 }
 
 
-rod_view_t detect_rods(const voltage_view_t &v)
+void detect_rods(const voltage_view_t &v, &rod_view_t rods)
 {
-  rod_view_t rods;
+
 
 	// For each line
   for (unsigned line = 0; line < NO_OF_LINES; line++)
