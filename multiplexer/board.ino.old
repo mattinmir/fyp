@@ -1,0 +1,34 @@
+#ifndef BOARD_INO
+#define BOARD_INO
+
+#include <Arduino.h>
+#include <vector>
+
+
+class Board
+{
+private:
+
+    unsigned nodes_per_line;
+    unsigned no_of_lines;
+
+public:
+    Board(  _nodes_per_line, 
+            _no_of_lines,
+         ) 
+        :   nodes_per_line(_nodes_per_line), 
+            no_of_lines(_no_of_lines), 
+    {   
+        values.resize(no_of_lines)
+        for (unsinged i = 0; i < values.size(); i++)
+        {
+            values[i].resize(nodes_per_line);
+        }
+    }
+
+    virtual void print() = 0;
+
+};
+
+
+#endif

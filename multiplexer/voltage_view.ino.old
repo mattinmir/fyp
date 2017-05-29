@@ -1,0 +1,46 @@
+#ifndef VOLTAGE_VIEW_INO
+#define VOLTAGE_VIEW_INO
+
+#include <Arduino.h>
+#include <vector>
+
+
+class Board
+{
+private:
+    std::vector<std::vector<T>> values;
+    unsigned nodes_per_line;
+    unsigned no_of_lines;
+    float input_voltage;
+    float measurement_precision;
+
+
+    bool same_voltage(float v1, float v2)
+    {
+        unsigned upper_limit = 1 + measurement_precision;
+        unsigned lower_limit = 1 - measurement_precision;
+
+	    return (v1 <= upper_limit*v2) && (v1 >= lower_limit*v2); 
+    }
+
+public:
+    Board(  _nodes_per_line, 
+            _no_of_lines,
+            _input_voltage, 
+            _measurement_precision
+         ) 
+        :   nodes_per_line(_nodes_per_line), 
+            no_of_lines(_no_of_lines), 
+            input_voltage(_input_voltage),
+            measurement_precision(_measurement_precision)
+    {   
+        values.resize(no_of_lines)
+        for (unsinged i = 0; i < values.size(); i++)
+        {
+            values[i].resize(nodes_per_line);
+        }
+    }
+};
+
+
+#endif

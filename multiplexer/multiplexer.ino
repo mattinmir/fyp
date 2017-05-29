@@ -1,4 +1,4 @@
-#define DEBU
+#define DEBUG
 
 #define NODES_PER_LINE              19
 #define GRID_SQUARES_PER_LINE       ((NODES_PER_LINE)/(2))
@@ -128,7 +128,9 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
     #ifdef DEBUG
     delay(1000);
     Serial.print ("\n");
-
+    Serial.print (line);
+    Serial.print ("\n");
+    
     Serial.print ("node");
     Serial.print ('\t');
     Serial.print ("mid_rod");
