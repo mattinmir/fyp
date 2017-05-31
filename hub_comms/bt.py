@@ -12,16 +12,12 @@ if sys.version < '3':
 
 
 if len(sys.argv) < 2:
-    print("usage: l2capclient.py <addr>")
+    print("usage: bt.py <addr>")
     sys.exit(2)
 
 
 bt_addr=sys.argv[1]
 port = 0x1001
-#passkey = "1234"
-
-#subprocess.call("kill `pidof bluetooth-agent`",shell=True)
-#status = subprocess.call("bluetooth-agent " + passkey + " &",shell=True)
 
 print("trying to connect to %s on PSM 0x%X" % (bt_addr, port))
 
