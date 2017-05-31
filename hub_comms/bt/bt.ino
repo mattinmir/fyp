@@ -9,13 +9,13 @@ void setup()
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
- 
+ bt.begin(9600);
   Serial.println("Ready!");
  
   // set the data rate for the SoftwareSerial port
  
   // for HC-05 use 38400 when poerwing with KEY/STATE set to HIGH on power on
-  bt.begin(9600);
+  
 }
  
 void loop() // run over and over
@@ -26,7 +26,6 @@ void loop() // run over and over
   }
   if (Serial.available())
   {
-     Serial.write(Serial.read());
     bt.write(Serial.read());
   }
 }
