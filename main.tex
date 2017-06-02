@@ -1,0 +1,42 @@
+\documentclass[a4paper,12pt,twoside]{report}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=3cm]{geometry}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{indentfirst}
+\usepackage[nottoc]{tocbibind}
+
+\newcommand{\ineq}{%
+  \mathrel{\mkern1mu\mkern-1mu\in\mkern-1mu\mkern1mu}} 
+%---------------------------------define line spacing 
+
+\usepackage[nodisplayskipstretch]{setspace}
+\setstretch{1.5} 
+\setlength{\parindent}{0cm}
+
+
+%---------------------------------define image path
+\graphicspath{{images/}}
+
+%---------------------------------chapter title format
+
+\begin{document}
+\input{title}
+\pagenumbering{roman}
+%\input{chapters/abstract}
+%\input{chapters/acknowledgements}
+\tableofcontents
+\listoffigures
+
+\newpage
+
+%-----------------------------------page numbering for report
+\pagenumbering{arabic}
+
+%\input{chapters/evaluation}
+
+\bibliographystyle{unsrt}
+\bibliography{ref}
+\end{document}
