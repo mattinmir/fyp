@@ -11,12 +11,15 @@ def I_M_nplus1(V_nplus1, R_M):
 
 
 V_in = None
-R_M = 10E6
-R = 10E6
+R_M = 1E6
+R = 1E6
 
-prev_R = 10E6
+R_history = [0, 0]
+
 # Target Current
 I_M_0 = 0.04E-6
+
+print("R, V_in")
 
 while V_in != 5.0:
 	# Starting Conditions (counts as first iteration)
@@ -54,21 +57,23 @@ while V_in != 5.0:
 
 	# If you need >5V to create 0.04E-6A of current at I_M_0, then the resistance is too high, so lower it
 	if V_in > 5.0:
-		# If prev_R is lower than current R, and current R is too high, then we overshot, and answer is between them,
+		# If prev R is lower than current R, and current R is too high, then we overshot, and answer is between them,
 		# so go to midpoint of the two
-		if prev_R < R:
-			R -= (R - prev_R)/2
-		# If prev_R is greater than current R and current R is too high, answer is less than both, so halve current R
+		if R_history[-2] < R:
+			R -= (R - R_history[-2])/2
+		# If prev R is greater than current R and current R is too high, answer is less than both, so halve current R
 		else:
 			R /= 2
 
 	# If you need <5V, then the resistance is too low, so increase it
-	if V_in < 5.0:
-		# If prev_R is more than current R, then it was too high, and since current R is too low, the answer is between them
-		if prev_R > R:
-			R += (prev_R - R)/2
-		# If prev_R is less than current R, and current r is too low, then the answer is more than both, so double current R
+	elif V_in < 5.0:
+		# If prev R is more than current R, then it was too high, and since current R is too low, the answer is between them
+		if R_history[-2] > R:
+			R += (R_history[-2] - R)/2
+		# If prev R is less than current R, and current r is too low, then the answer is more than both, so double current R
 		else:
 			R *= 2
-
-	prev_R = R
+	else:
+		print("Correct Value: " + str(R))
+		break
+	R_history.append(R)
