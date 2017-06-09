@@ -3,7 +3,7 @@ def Rnplus1(Rc, Rn, Rm):
 
 Rm = 1E6
 
-Rc = 33000
+Rc = 1000
 Rn = [Rc]
 
 for i in range(20):
