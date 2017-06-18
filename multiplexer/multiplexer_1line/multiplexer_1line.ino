@@ -8,12 +8,16 @@
 
 
 typedef float voltage_view_t[NO_OF_LINES][NODES_PER_LINE]; // Holds voltages at each node
-typedef unsigned rod_view_t[NO_OF_LINES][GRID_SQUARES_PER_LINE]; // Holds representation of board in rod format 
+typedef unsigned rod_view_t[NO_OF_LINES][GRID_SQUARES_PER_LINE]; // Holds representation of board in rod format
 
-voltage_view_t voltages; // Voltages at each node 
-rod_view_t rods; // Representation of board in rod format 
-unsigned intermediary_sel[] = { /*lsb*/ 25, 26, 27 /*msb*/ }; // Select pins for intermediary multiplexers
-unsigned output_sel[] = { /*lsb*/ 22, 23, 24 /*msb*/ }; // Select pins to choose ouput of which multiplexer
+voltage_view_t voltages; // Voltages at each node
+rod_view_t rods; // Representation of board in rod format
+
+
+// Higher level = closer to resistors
+// Lower level = closer to Arduino
+unsigned level2_sel[] = { /*lsb*/ 25, 26, 27 /*msb*/ };
+unsigned level1_sel[] = { /*lsb*/ 22, 23, 24 /*msb*/ };
 
 unsigned debug_pin = 53;
 bool debug = false;
@@ -32,18 +36,18 @@ void setup(){
   
   for(unsigned pin = 0; pin < 3; pin++) // setup select pins
   {
-    pinMode(intermediary_sel[pin], OUTPUT);
-    pinMode(output_sel[pin], OUTPUT);
-  } 
+    pinMode(level2_sel[pin], OUTPUT);
+    pinMode(level1_sel[pin], OUTPUT);
+  }
 
   for (unsigned i = 0; i < NO_OF_LINES; i++)
   {
     for (unsigned j = 0; j < GRID_SQUARES_PER_LINE; j++)
     {
-      rods[i][j] = 0;   
+      rods[i][j] = 0;
     }
   }
-  
+
   Serial.println ("Begin\n");
 }
 
@@ -51,41 +55,41 @@ void setup(){
 void loop()
 {
   debug = digitalRead(debug_pin);
-  
+
   // For each line
   for (unsigned line = 0; line < NO_OF_LINES; line++)
   {
       // For each muliplexer
      for (unsigned i = 0; i < 3; i++)
      {
-        // Set the select of the root mux to the desired intermediary output
-        digitalWrite(output_sel[0], (line*3 + i) & 0x1);
-        digitalWrite(output_sel[1], (line*3 + i) & 0x2);
-        digitalWrite(output_sel[2], (line*3 + i) & 0x4);
-                
-        // For each input to the intermediary multiplexer
-        for (unsigned short j = 0; j < 8 && (i*8 + j) < NODES_PER_LINE; j++) // Room for 24 reads per intermediary set but only using NODES_PER_LINE of them
-        { 
+        // Set the select of the root mux to the desired level2 output
+        digitalWrite(level1_sel[0], (line*3 + i) & 0x1);
+        digitalWrite(level1_sel[1], (line*3 + i) & 0x2);
+        digitalWrite(level1_sel[2], (line*3 + i) & 0x4);
+
+        // For each input to the level2 multiplexer
+        for (unsigned short j = 0; j < 8 && (i*8 + j) < NODES_PER_LINE; j++) // Room for 24 reads per level2 set but only using NODES_PER_LINE of them
+        {
           // Set select to that input
-          digitalWrite(intermediary_sel[0], j & 0x1); // Bitmask bit 1
-          digitalWrite(intermediary_sel[1], j & 0x2); // Bitmask bit 2
-          digitalWrite(intermediary_sel[2], j & 0x4); // Bitmask bit 3
+          digitalWrite(level2_sel[0], j & 0x1); // Bitmask bit 1
+          digitalWrite(level2_sel[1], j & 0x2); // Bitmask bit 2
+          digitalWrite(level2_sel[2], j & 0x4); // Bitmask bit 3
 
           // Take reading, store in respective array element
           voltages[line][(i*8 + j)] = analogRead(output) * (INPUT_VOLTAGE / 1023.0);
-        }  
-      }     
+        }
+      }
     }
 
 
     rod_view_t new_rods;
     detect_rods(voltages, new_rods);
-     
+
     delay(100);
     if(state_has_changed(rods, new_rods))
-    {     
+    {
       for(unsigned i = 0; i < NO_OF_LINES; i++)
-      { 
+      {
         memcpy(&rods[i], &new_rods[i], sizeof(new_rods[0]));
       }
       Serial.println ("\n");
@@ -104,7 +108,7 @@ bool same_voltage(float v1, float v2)
   //float lower_limit = 1.0 - MEASUREMENT_PRECISION;
   float leeway = INPUT_VOLTAGE * MEASUREMENT_PRECISION;
 
-  return (v1 <= v2+leeway) && (v1 >= v2-leeway); 
+  return (v1 <= v2+leeway) && (v1 >= v2-leeway);
 }
 
 
@@ -119,14 +123,14 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
     unsigned count;
     bool mid_rod = false;
     unsigned node = 0;
-    
+
     if(debug)
     {
       delay(1000);
       Serial.print ("\n");
       Serial.print (line);
       Serial.print ("\n");
-      
+
       Serial.print ("node");
       Serial.print ('\t');
       Serial.print ("mid_rod");
@@ -146,10 +150,10 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
       Serial.print ("v node+1");
       Serial.print ("\n");
     }
-    
+
     // For each node on the line
     while (node < NODES_PER_LINE)
-    { 
+    {
       if(debug)
       {
         Serial.print (node);
@@ -171,18 +175,18 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
         Serial.print (v[line][node+1]);
         Serial.print ("\n");
       }
-      
+
       if  ( !mid_rod && // If not currently tracing a rod
-            node + 1 < NODES_PER_LINE // and not at the end of the line  
-          ) 
+            node + 1 < NODES_PER_LINE // and not at the end of the line
+          )
       {
         // If the next node has the same voltage as the current one
-        if(same_voltage(v[line][node], v[line][node+1])) 
+        if(same_voltage(v[line][node], v[line][node+1]))
         {
           mid_rod = true; // Begin tracing a rod
-          head = node; // Note the start of the rod 
+          head = node; // Note the start of the rod
           count = 2; // Keep count of length of rod
-          node += 2; // Already know the first two nodes are part of the rod 
+          node += 2; // Already know the first two nodes are part of the rod
 
            // If end of line then end of rod
           if (node + 1 > NODES_PER_LINE)
@@ -190,7 +194,7 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
             // Each rod covers 2x as many nodes as its length
             unsigned rod_length = (count+1) / 2;
             unsigned rod_begin = head/2;
-            
+
             // Mark the rod in the rod_view structure
             for (unsigned i = 0; i < rod_length; i++)
             {
@@ -206,12 +210,12 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
           node+=2; // If we are not in a rod and there wasnt a connection in the first spot of the cell, there won't be in the second
         }
       }
-      
+
       // If currently tracing a rod
       else if (mid_rod)
       {
         bool still_mid_rod =  same_voltage(v[line][node], v[line][head]);
-        
+
         // If current node same voltage as the head
         if (still_mid_rod)
         {
@@ -225,12 +229,12 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
             // Each rod covers 2x as many nodes as its length
             unsigned rod_length = (count+1) / 2;
             unsigned rod_begin = head/2;
-            
+
             // Mark the rod in the rod_view structure
             for (unsigned i = 0; i < rod_length; i++)
             {
               rods[line][rod_begin+i] = rod_length;
-              
+
             }
           }
         }
@@ -241,29 +245,29 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
           // Each rod covers 2x as many nodes as its length
           unsigned rod_length = (count+1) / 2;
           unsigned rod_begin = head/2;
-          
+
           // Mark the rod in the rod_view structure
           for (unsigned i = 0; i < rod_length; i++)
           {
             rods[line][rod_begin+i] = rod_length;
-            
+
           }
 
           // End of rod
           mid_rod = false;
           count = 0;
-          
-        } 
+
+        }
       }
-      
+
       else if (  !mid_rod && // If not currently tracing a rod
-                 node + 1 == NODES_PER_LINE // and at the end of the line  
+                 node + 1 == NODES_PER_LINE // and at the end of the line
               )
       {
-        break;      
+        break;
       }
-      
-      
+
+
     }
   }
 }
@@ -278,7 +282,7 @@ bool state_has_changed(rod_view_t rods_old, rod_view_t rods_new)
       // If any cell is different, return true
       if (rods_old[i][j] != rods_new[i][j])
       {
- 
+
         return true;
       }
     }
