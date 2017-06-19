@@ -30,9 +30,14 @@ address_file = open(address_filename, 'r')
 addresses = address_file.readlines()
 address_file.close()
 
+creds_file = open("credentials.txt")
+creds = creds_file.readlines()
+creds_file.close()
+
+
 port = 0x1001
-addr_socket={}
-board_id = 0
+addr_socket = {}
+board_id = 8
 addr_id = {}
 
 for addr in addresses:
@@ -49,7 +54,7 @@ for addr in addresses:
 socket_addr = dict((reversed(item) for item in addr_socket.items()))
 socket_list = addr_socket.values()
 while True:
-	read_sockets, write_sockets, error_sockets = select.select(socket_list , [] , [])
+	read_sockets, write_sockets, error_sockets = select.select(socket_list, [], [])
 
 	for s in read_sockets:
 			# Get message length
@@ -74,13 +79,16 @@ while True:
 
 				id = addr_id[socket_addr[s]]
 				timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-					
-				
-				data = '{{"rods":{},"timestamp":{}}}'.format(rods, timestamp)
-				headers = { 'Content-Type': 'application/json',	}
-				#print requests.post('POST http://app.smartrods.co.uk/api/boards/'+str(id), headers=headers, data=data)
-				print data
-sock.close()
+				username = creds[0].rstrip('\n')
+				password = creds[1].rstrip('\n')
+
+				data = '{{"rods":{}, "timestamp": "{}"}}'.format(rods, timestamp)
+				headers = {'Content-Type': 'application/json',	}
+
+
+				response = requests.post('http://app.smartrods.co.uk/api/boards/'+str(id), headers=headers, data=data, auth = (username, password))
+
+
 
 
 #00:14:03:06:20:F9
