@@ -1,3 +1,4 @@
+#include <SoftwareSerial.h>
 
 
 #define NODES_PER_LINE              20
@@ -7,8 +8,12 @@
 #define MEASUREMENT_PRECISION       0.03f
 
 
+
+
 typedef float voltage_view_t[NO_OF_LINES][NODES_PER_LINE]; // Holds voltages at each node
 typedef unsigned rod_view_t[NO_OF_LINES][GRID_SQUARES_PER_LINE]; // Holds representation of board in rod format
+
+SoftwareSerial bt(10, 11); // RX, TX
 
 voltage_view_t voltages; // Voltages at each node
 rod_view_t rods; // Representation of board in rod format
@@ -26,12 +31,13 @@ unsigned output = 0;   // Analogue pin to read voltage reading from
 unsigned counter = 0;
 
 void detect_rods(const voltage_view_t &v, rod_view_t &rods);
-
-
+void send_msg(String code, String msg, SoftwareSerial& conn);
+String rods_to_json(rod_view_t rods);
 
 
 void setup(){
-  Serial.begin(9600);  // serial comms for troubleshooting (always)
+  Serial.begin(9600);  
+  bt.begin(9600);
   pinMode(debug_pin, INPUT);
   
   for(unsigned pin = 0; pin < 3; pin++) // setup select pins
@@ -93,11 +99,17 @@ void loop()
         memcpy(&rods[i], &new_rods[i], sizeof(new_rods[0]));
       }
       Serial.println ("\n");
-      //#ifndef DEBUG
+
       print_rod_view(rods);
-      //#endif
-      //TODO: Send message to server
-    }
+
+
+      send_msg("0", rods_to_json(rods), bt);
+      while (bt.available())
+      {
+        Serial.write(bt.read());
+      }
+
+   }
 
 }
 
@@ -305,3 +317,49 @@ void print_rod_view(rod_view_t r)
   }
   Serial.print ("\n");
 }
+
+void send_msg(String code, String msg, SoftwareSerial &conn)
+{
+  msg = code + msg;
+  int msg_len = msg.length();
+  String msg_len_str = String(msg_len);
+  
+  String padded_msg_len_str = msg_len_str;
+  while (padded_msg_len_str.length() < 4)
+  {
+    padded_msg_len_str = "0" + padded_msg_len_str;
+  }
+
+  String sized_msg =  padded_msg_len_str + msg;
+
+
+  conn.write(sized_msg.c_str());   
+}
+
+String rods_to_json(rod_view_t rods)
+{
+  String json = "";
+  json += '[';
+  for (unsigned i = 0; i < NO_OF_LINES; i++)
+  {
+    json += '[';
+    for (unsigned j = 0; j < GRID_SQUARES_PER_LINE; j++)
+    {
+      json += rods[i][j];
+      if(j < GRID_SQUARES_PER_LINE - 1)
+      {
+        json += ',';
+      }
+    }
+    json += ']';
+     if(i < NO_OF_LINES - 1)
+     {
+      json += ',';
+     }
+  }
+  json += ']';
+
+  return json;
+  
+ }
+
