@@ -4,7 +4,8 @@ import sys
 import bluetooth
 import subprocess
 import select
-from copy import deepcopy
+import requests
+import time
 
 def recv(sock, length):
     data = ''
@@ -56,15 +57,28 @@ while True:
 			
 			# Read that many chars
 			data = recv(s, length)
+			
+			# Check code character
 			if data[0] == '0':
+				# Strip code character
 				rods = data[1:]
+
+				# Send acknowledgement
 				s.send("ACK:" + rods + '\n\r')
 			
+				# Demo using one row only, pad out rest of board
 				if demo:
 					rods = rods[0:-1]
 					rods += ',[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]]'
 
+				id = addr_id[socket_addr[s]]
+				timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 					
+				
+				data = '{"rods":{},"timestamp":{}'.format(rods, timestamp)
+				headers = { 'Content-Type': 'application/json',	}
+				requests.post('POST http://app.smartrods.co.uk/api/boards/'+id, headers=headers, data=data)
+
 sock.close()
 
 

@@ -12,6 +12,10 @@
 
 typedef float voltage_view_t[NO_OF_LINES][NODES_PER_LINE]; // Holds voltages at each node
 typedef unsigned rod_view_t[NO_OF_LINES][GRID_SQUARES_PER_LINE]; // Holds representation of board in rod format
+typedef enum msg_code
+{
+  code_rods = 0
+} 
 
 SoftwareSerial bt(10, 11); // RX, TX
 
@@ -91,26 +95,30 @@ void loop()
     rod_view_t new_rods;
     detect_rods(voltages, new_rods);
 
-    delay(100);
+    // Rate limit to save power
+    delay(200);
+
+    // If a rod has been placed or removed
     if(state_has_changed(rods, new_rods))
     {
+      // Copy the new state of the board
       for(unsigned i = 0; i < NO_OF_LINES; i++)
       {
         memcpy(&rods[i], &new_rods[i], sizeof(new_rods[0]));
       }
+      // Print state of board for troubleshooting
       Serial.println ("\n");
-
       print_rod_view(rods);
 
+      // Transmit new state to hub via bluetooth
+      send_msg(code_rods, rods_to_json(rods), bt);
 
-      send_msg("0", rods_to_json(rods), bt);
+      // Read back acknowledgement
       while (bt.available())
       {
         Serial.write(bt.read());
       }
-
    }
-
 }
 
 // Returns true if voltages are within 2*MEASUREMENT_PRECISION of each other
