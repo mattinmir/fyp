@@ -5,7 +5,8 @@ import bluetooth
 import subprocess
 import select
 import requests
-import time
+import datetime
+
 
 def recv(sock, length):
     data = ''
@@ -75,10 +76,10 @@ while True:
 				timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
 					
 				
-				data = '{"rods":{},"timestamp":{}'.format(rods, timestamp)
+				data = '{{"rods":{},"timestamp":{}}}'.format(rods, timestamp)
 				headers = { 'Content-Type': 'application/json',	}
-				requests.post('POST http://app.smartrods.co.uk/api/boards/'+id, headers=headers, data=data)
-
+				#print requests.post('POST http://app.smartrods.co.uk/api/boards/'+str(id), headers=headers, data=data)
+				print data
 sock.close()
 
 
