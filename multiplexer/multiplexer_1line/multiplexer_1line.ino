@@ -15,7 +15,7 @@ typedef unsigned rod_view_t[NO_OF_LINES][GRID_SQUARES_PER_LINE]; // Holds repres
 typedef enum msg_code
 {
   code_rods = 0
-} 
+};
 
 SoftwareSerial bt(10, 11); // RX, TX
 
@@ -111,7 +111,7 @@ void loop()
       print_rod_view(rods);
 
       // Transmit new state to hub via bluetooth
-      send_msg(code_rods, rods_to_json(rods), bt);
+      send_msg(String(code_rods), rods_to_json(rods), bt);
 
       // Read back acknowledgement
       while (bt.available())
