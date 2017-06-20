@@ -3,10 +3,11 @@ def Rnplus1(Rc, Rn, Rm):
 
 Rm = 1E6
 
-Rc = 1000
+Rc = 10000
 Rn = [Rc]
+n = 20
 
-for i in range(20):
+for i in range(n):
 	Rn.append(Rnplus1(Rc, Rn[i], Rm))
 
 for r in Rn:
