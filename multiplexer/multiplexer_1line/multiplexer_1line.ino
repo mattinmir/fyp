@@ -44,12 +44,14 @@ void setup(){
   bt.begin(9600);
   pinMode(debug_pin, INPUT);
   
-  for(unsigned pin = 0; pin < 3; pin++) // setup select pins
+  // Setup select pins
+  for(unsigned pin = 0; pin < 3; pin++) 
   {
     pinMode(level2_sel[pin], OUTPUT);
     pinMode(level1_sel[pin], OUTPUT);
   }
 
+  // Initialise board to empty
   for (unsigned i = 0; i < NO_OF_LINES; i++)
   {
     for (unsigned j = 0; j < GRID_SQUARES_PER_LINE; j++)
@@ -134,8 +136,6 @@ bool same_voltage(float v1, float v2)
 
 void detect_rods(const voltage_view_t &v, rod_view_t &rods)
 {
-
-
   // For each line
   for (unsigned line = 0; line < NO_OF_LINES; line++)
   {
@@ -328,22 +328,27 @@ void print_rod_view(rod_view_t r)
 
 void send_msg(String code, String msg, SoftwareSerial &conn)
 {
+  // Prepend message code
   msg = code + msg;
+  
   int msg_len = msg.length();
   String msg_len_str = String(msg_len);
   
+  // Pad length value to 4 digits
   String padded_msg_len_str = msg_len_str;
   while (padded_msg_len_str.length() < 4)
   {
     padded_msg_len_str = "0" + padded_msg_len_str;
   }
-
+  
+  // Prepend length to message
   String sized_msg =  padded_msg_len_str + msg;
 
-
+  // Send message
   conn.write(sized_msg.c_str());   
 }
 
+// Converts rods structure to json format
 String rods_to_json(rod_view_t rods)
 {
   String json = "";
