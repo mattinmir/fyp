@@ -7,7 +7,7 @@ import select
 import requests
 import datetime
 
-
+# Recieves from socket until there is no data left to receive
 def recv(sock, length):
     data = ''
     while len(data) < length:
@@ -26,10 +26,12 @@ if len(sys.argv) < 2:
 
 address_filename = sys.argv[1]
 
+# Read MAS addresses
 address_file = open(address_filename, 'r')
 addresses = address_file.readlines()
 address_file.close()
 
+# Read API credentials
 creds_file = open("credentials.txt")
 creds = creds_file.readlines()
 creds_file.close()
@@ -40,6 +42,7 @@ addr_socket = {}
 board_id = 8
 addr_id = {}
 
+# Connect to HC05 bluetooth modules
 for addr in addresses:
 	a = addr.rstrip('\n\r')
 	print("Trying to connect to %s on port 0x%X" % (a, port))
@@ -53,7 +56,10 @@ for addr in addresses:
 		
 socket_addr = dict((reversed(item) for item in addr_socket.items()))
 socket_list = addr_socket.values()
+
+
 while True:
+	# Waits until message comes in then populated `read_sockets` with data-sending connections
 	read_sockets, write_sockets, error_sockets = select.select(socket_list, [], [])
 
 	for s in read_sockets:
@@ -85,10 +91,5 @@ while True:
 				data = '{{"rods":{}, "timestamp": "{}"}}'.format(rods, timestamp)
 				headers = {'Content-Type': 'application/json',	}
 
-
+				# Make API call
 				response = requests.post('http://app.smartrods.co.uk/api/boards/'+str(id), headers=headers, data=data, auth = (username, password))
-
-
-
-
-#00:14:03:06:20:F9

@@ -148,7 +148,7 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
 {
 
 
-	// For each line
+  // For each line
   for (unsigned line = 0; line < NO_OF_LINES; line++)
   {
     unsigned head;
@@ -156,8 +156,8 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
     bool mid_rod = false;
     unsigned node = 0;
 
-
-    #ifdef DEBUG
+    if(debug)
+    {
       delay(1000);
       Serial.print ("\n");
       Serial.print (line);
@@ -181,12 +181,13 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
       Serial.print ('\t');
       Serial.print ("v node+1");
       Serial.print ("\n");
-    #endif
+    }
 
     // For each node on the line
     while (node < NODES_PER_LINE)
     {
-      #ifdef DEBUG
+      if(debug)
+      {
         Serial.print (node);
         Serial.print ('\t');
         Serial.print (mid_rod);
@@ -205,7 +206,7 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
         Serial.print ('\t');
         Serial.print (v[line][node+1]);
         Serial.print ("\n");
-      #endif
+      }
 
       if  ( !mid_rod && // If not currently tracing a rod
             node + 1 < NODES_PER_LINE // and not at the end of the line
@@ -218,6 +219,20 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
           head = node; // Note the start of the rod
           count = 2; // Keep count of length of rod
           node += 2; // Already know the first two nodes are part of the rod
+
+           // If end of line then end of rod
+          if (node + 1 > NODES_PER_LINE)
+          {
+            // Each rod covers 2x as many nodes as its length
+            unsigned rod_length = (count+1) / 2;
+            unsigned rod_begin = head/2;
+
+            // Mark the rod in the rod_view structure
+            for (unsigned i = 0; i < rod_length; i++)
+            {
+              rods[line][rod_begin+i] = rod_length;
+            }
+          }
         }
 
         // If there is no rod present
@@ -231,25 +246,43 @@ void detect_rods(const voltage_view_t &v, rod_view_t &rods)
       // If currently tracing a rod
       else if (mid_rod)
       {
+        bool still_mid_rod =  same_voltage(v[line][node], v[line][head]);
+
         // If current node same voltage as the head
-        if (same_voltage(v[line][node], v[line][head]))
+        if (still_mid_rod)
         {
           // Increase the trace one step
           count++;
           node++;
+
+          // If end of line then end of rod
+          if (node + 1 == NODES_PER_LINE)
+          {
+            // Each rod covers 2x as many nodes as its length
+            unsigned rod_length = (count+1) / 2;
+            unsigned rod_begin = head/2;
+
+            // Mark the rod in the rod_view structure
+            for (unsigned i = 0; i < rod_length; i++)
+            {
+              rods[line][rod_begin+i] = rod_length;
+
+            }
+          }
         }
 
         // If end of rod
-        else
+        else if(!still_mid_rod)
         {
           // Each rod covers 2x as many nodes as its length
-          unsigned rod_length = count / 2;
+          unsigned rod_length = (count+1) / 2;
           unsigned rod_begin = head/2;
 
           // Mark the rod in the rod_view structure
           for (unsigned i = 0; i < rod_length; i++)
           {
             rods[line][rod_begin+i] = rod_length;
+
           }
 
           // End of rod
